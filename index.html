@@ -1,21 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyID Speed Hack</title>
-    <style>body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Game Tool</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #000; }
+        #app-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        iframe { border: none; width: 100%; height: 100%; }
+        #loader { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; z-index: 1000; text-align: center; font-family: sans-serif; }
+        .spinner { border: 4px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top: 4px solid #3498db; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
 </head>
 <body>
-    <iframe id="gf" src="https://fishing-pro-as.maxbet.com.mm/" style="width:100%;height:100%;border:none;"></iframe>
+    <div id="loader"><div class="spinner"></div><p>Loading...</p></div>
+    <div id="app-container">
+        <iframe id="game-iframe" src="https://fishing-pro-as.maxbet.com.mm/" allow="autoplay; fullscreen; accelerometer; gyroscope"></iframe>
+    </div>
+
     <script>
-        var speed = 10.0; 
-        setInterval(function() {
-            var w = document.getElementById('gf').contentWindow;
-            if(w) {
-                w.setTimeout = (function(o){ return function(f,t){ return o(f,t/speed); }; })(w.setTimeout);
-                w.setInterval = (function(o){ return function(f,t){ return o(f,t/speed); }; })(w.setInterval);
+        // TOKEN CONFIGURATION
+        const MY_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJkMDBvMWdJdXhnTHNsY1BoT0tuNkVwNkNLVEw5U21mWEU3ZUVDUUV5OUk4In0.eyJqdGkiOiJjZTRhMmQxZC0zMDY3LTQ5YTctYTM3MC1iMWFkYTA4MzNmZjUiLCJleHAiOjE3NzkyMTE5NzMsIm5iZiI6MCwiaWF0IjoxNzc2NTMzNTczLCJpc3MiOiJodHRwczovL2lkLm15dGVsLmNvbS5tbS9hdXRoL3JlYWxtcy9jaW0iLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiNzZlNjIxNTUtZjdiYS00ZWI4LWJhNjUtNjNkMjI0ODhmOGViIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiY3BtLWNsaWVudCIsImF1dGhfdGltZSI6MCwic2Vzc2lvbl9zdGF0ZSI6Ijk5MTE1NTc1LWM3NzQtNDc1OS1hNGE0LTljMWE4NDRkOGU2NSIsImFjciI6IjEiLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwicHJlZmVycmVkX3VzZXJuYW1lIjoidGR5ZyhuaiIsImlkIjoiNzZlNjIxNTUtZjdiYS00ZWI4LWJhNjUtNjNkMjI0ODhmOGViIn0.cVUSgvj0Emnv3h5krSGUHeFSOmnSMUFcm_Uz8OOS773dpM2BaI8QHc2_YbIaR6pAnELL9Ow76W4zumtlkHHk_9N89Vj-36AcCw2Lf28Qor0qC-4v2S_xukw9FG_icplhiHmghRQ9cQfKjr-u0OKuvLm66EzDA6HM4ZIkfhUQH979if22h2K7-1Dg_lyMDAZQEEYXAEKyh0FU8Uwlon_k602Cvud1Y4lFlknp5Ru0xDV7SEm-LkqP_MXejDpmWZGN7ljmbe3ofyy-lFhPJ0lWWj8XOGcZRIYyLuucs3bjKli5w8M8p-gElhbxSUNT6WFkYiyqbxbVELM76l2RMOBkyA";
+
+        const webApp = window.Telegram.WebApp;
+        webApp.expand();
+        webApp.ready();
+
+        const iframe = document.getElementById('game-iframe');
+
+        iframe.onload = function() {
+            document.getElementById('loader').style.display = 'none';
+            try {
+                // Bypass Logic
+                const win = iframe.contentWindow;
+                win.localStorage.setItem('accessToken', MY_TOKEN);
+                win.localStorage.setItem('user_token', MY_TOKEN);
+            } catch (e) {
+                console.log("Token injection status: Safe Mode");
             }
+        };
+
+        // Speed Hack (2.5x)
+        setInterval(function() {
+            try {
+                const win = iframe.contentWindow;
+                if (win.cc && win.cc.director) {
+                    win.cc.director.getScheduler().setTimeScale(2.5);
+                }
+            } catch (e) {}
         }, 1000);
     </script>
 </body>
