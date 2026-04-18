@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyID Speed Hack</title>
+    <style>body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }</style>
+</head>
+<body>
+    <iframe id="gf" src="https://fishmya.ugame.vn/" style="width:100%;height:100%;border:none;"></iframe>
+    <script>
+        var speed = 10.0; 
+        setInterval(function() {
+            var w = document.getElementById('gf').contentWindow;
+            if(w) {
+                w.setTimeout = (function(o){ return function(f,t){ return o(f,t/speed); }; })(w.setTimeout);
+                w.setInterval = (function(o){ return function(f,t){ return o(f,t/speed); }; })(w.setInterval);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
