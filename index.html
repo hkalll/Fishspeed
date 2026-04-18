@@ -3,47 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Game Tool</title>
+    <title>Game App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #000; }
-        #app-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        iframe { border: none; width: 100%; height: 100%; display: block; }
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+        }
+        #game-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        iframe {
+            border: none;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
     </style>
 </head>
 <body>
-    <div id="app-container">
-        <iframe id="game-iframe" src="https://fishing-pro-as.maxbet.com.mm/" allow="autoplay; fullscreen; accelerometer; gyroscope"></iframe>
+    <div id="game-container">
+        <iframe 
+            id="main-game-frame" 
+            src="https://fishing-pro-as.maxbet.com.mm/" 
+            allow="autoplay; fullscreen; accelerometer; gyroscope">
+        </iframe>
     </div>
 
     <script>
-        const MY_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJkMDBvMWdJdXhnTHNsY1BoT0tuNkVwNkNLVEw5U21mWEU3ZUVDUUV5OUk4In0.eyJqdGkiOiJjZTRhMmQxZC0zMDY3LTQ5YTctYTM3MC1iMWFkYTA4MzNmZjUiLCJleHAiOjE3NzkyMTE5NzMsIm5iZiI6MCwiaWF0IjoxNzc2NTMzNTczLCJpc3MiOiJodHRwczovL2lkLm15dGVsLmNvbS5tbS9hdXRoL3JlYWxtcy9jaW0iLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiNzZlNjIxNTUtZjdiYS00ZWI4LWJhNjUtNjNkMjI0ODhmOGViIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiY3BtLWNsaWVudCIsImF1dGhfdGltZSI6MCwic2Vzc2lvbl9zdGF0ZSI6Ijk5MTE1NTc1LWM3NzQtNDc1OS1hNGE0LTljMWE4NDRkOGU2NSIsImFjciI6IjEiLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwicHJlZmVycmVkX3VzZXJuYW1lIjoidGR5ZyhuaiIsImlkIjoiNzZlNjIxNTUtZjdiYS00ZWI4LWJhNjUtNjNkMjI0ODhmOGViIn0.cVUSgvj0Emnv3h5krSGUHeFSOmnSMUFcm_Uz8OOS773dpM2BaI8QHc2_YbIaR6pAnELL9Ow76W4zumtlkHHk_9N89Vj-36AcCw2Lf28Qor0qC-4v2S_xukw9FG_icplhiHmghRQ9cQfKjr-u0OKuvLm66EzDA6HM4ZIkfhUQH979if22h2K7-1Dg_lyMDAZQEEYXAEKyh0FU8Uwlon_k602Cvud1Y4lFlknp5Ru0xDV7SEm-LkqP_MXejDpmWZGN7ljmbe3ofyy-lFhPJ0lWWj8XOGcZRIYyLuucs3bjKli5w8M8p-gElhbxSUNT6WFkYiyqbxbVELM76l2RMOBkyA";
+        // Initialize Telegram WebApp for Full Screen
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready();
 
-        const webApp = window.Telegram.WebApp;
-        webApp.expand();
-        webApp.ready();
+        const gameIframe = document.getElementById('main-game-frame');
 
-        const iframe = document.getElementById('game-iframe');
-
-        // Token Injection
-        iframe.onload = function() {
+        // Automatic Speed Hack (2.5x) 
+        // This will run in the background after you log in manually
+        setInterval(() => {
             try {
-                const win = iframe.contentWindow;
-                win.localStorage.setItem('accessToken', MY_TOKEN);
-                win.localStorage.setItem('user_token', MY_TOKEN);
-            } catch (e) {}
-        };
-
-        // Speed Hack (2.5x)
-        setInterval(function() {
-            try {
-                const win = iframe.contentWindow;
-                if (win.cc && win.cc.director) {
-                    win.cc.director.getScheduler().setTimeScale(2.5);
+                const gameWindow = gameIframe.contentWindow;
+                if (gameWindow.cc && gameWindow.cc.director) {
+                    gameWindow.cc.director.getScheduler().setTimeScale(2.5);
                 }
-            } catch (e) {}
-        }, 1000);
+            } catch (error) {
+                // Silently handle cross-origin restrictions
+            }
+        }, 1500);
+
+        // Fix for Viewport on Mobile
+        window.addEventListener('resize', () => {
+            document.body.style.height = window.innerHeight + 'px';
+        });
     </script>
 </body>
 </html>
-
