@@ -1,23 +1,27 @@
 import os
 import logging
-import requests
-from urllib.parse import urlencode, urlparse, parse_qs
+from urllib.parse import urlencode, urlparse
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo, ReplyKeyboardRemove
 from telegram.ext import Application, CommandHandler, ConversationHandler, ContextTypes, MessageHandler, filters
 
 # --- Configuration ---
-# GitHub/Server ရဲ့ Environment Variables ထဲမှာ BOT_TOKEN ကို ထည့်ပေးရပါမယ်
-BOT_TOKEN = os.getenv("BOT_TOKEN")
+# 8688282898:AAGJR1kQ-2CPR29_QEC-LWmWkopEdqhFGBI
+BOT_TOKEN = "8688282898:AAGJR1kQ-2CPR29_QEC-LWmWkopEdqhFGBI" 
 GAME_BASE_URL = "http://fishmya.ugame.vn/"
 
 # States
 ASK_PHONE, ASK_PASSWORD, LOGGED_IN = range(3)
 
+# Logging configuration
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 async def simulate_myid_login(phone, password):
-    # MyID Login Simulation (Demo tokens)
+    """
+    MyID Login Simulation (Demo tokens)
+    မှတ်ချက်။ ။ ဤသည်မှာ Demo သာဖြစ်ပြီး အမှန်တကယ် Login ဝင်ရန် 
+    Backend API နှင့် ချိတ်ဆက်ရန် လိုအပ်ပါသည်။
+    """
     if phone and password:
         return {
             "uuid": "29a71a2a17b95df3f90753aeaa174c76",
@@ -29,54 +33,5 @@ async def simulate_myid_login(phone, password):
 def construct_game_url(uuid, mcuid):
     parsed = urlparse(GAME_BASE_URL)
     params = {"uuid": uuid, "mcuid": mcuid, "mcapp": "myid"}
-    return parsed._replace(query=urlencode(params)).geturl()
+    return parsed
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("MyID Game Bot မှ ကြိုဆိုပါတယ်။\nLogin ဝင်ရန် /login ကို နှိပ်ပါ။")
-    return ConversationHandler.END
-
-async def login_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("MyID ဖုန်းနံပါတ် ရိုက်ပါ။", reply_markup=ReplyKeyboardRemove())
-    return ASK_PHONE
-
-async def ask_password(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    context.user_data["phone"] = update.message.text.strip()
-    await update.message.reply_text("Password ရိုက်ပါ။")
-    return ASK_PASSWORD
-
-async def do_login(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    phone = context.user_data.get("phone")
-    password = update.message.text.strip()
-    res = await simulate_myid_login(phone, password)
-    
-    if res:
-        game_url = construct_game_url(res["uuid"], res["mcuid"])
-        kb = [[InlineKeyboardButton("Play Game 🎮", web_app=WebAppInfo(url=game_url))],
-              [InlineKeyboardButton("Logout 🚪", callback_data="logout")]]
-        await update.message.reply_text(f"Login အောင်မြင်ပါတယ်။ {res['name']}။", reply_markup=InlineKeyboardMarkup(kb))
-        return LOGGED_IN
-    await update.message.reply_text("Login မှားနေပါတယ်။ /login ပြန်လုပ်ပါ။")
-    return ConversationHandler.END
-
-def main():
-    if not BOT_TOKEN:
-        print("Error: BOT_TOKEN not found in environment variables!")
-        return
-    app = Application.builder().token(BOT_TOKEN).build()
-    conv = ConversationHandler(
-        entry_points=[CommandHandler("login", login_start)],
-        states={
-            ASK_PHONE: [MessageHandler(filters.TEXT & ~filters.COMMAND, ask_password)],
-            ASK_PASSWORD: [MessageHandler(filters.TEXT & ~filters.COMMAND, do_login)],
-            LOGGED_IN: [MessageHandler(filters.ALL, login_start)]
-        },
-        fallbacks=[CommandHandler("start", start)]
-    )
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(conv)
-    print("Bot is running...")
-    app.run_polling()
-
-if __name__ == "__main__":
-    main()
-    
