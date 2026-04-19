@@ -2,67 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Game App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MyID Login</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #000;
-        }
-        #game-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        iframe {
-            border: none;
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #f4f4f4; overflow: hidden; }
+        #auth-frame { width: 100%; height: 100vh; border: none; }
     </style>
 </head>
 <body>
-    <div id="game-container">
-        <iframe 
-            id="main-game-frame" 
-            src="https://fishing-pro-as.maxbet.com.mm/" 
-            allow="autoplay; fullscreen; accelerometer; gyroscope">
-        </iframe>
-    </div>
+
+    <iframe id="auth-frame" src="https://id.mytel.com.mm/auth/realms/cim/protocol/openid-connect/auth?client_id=cpm-client&redirect_uri=https%3A%2F%2Ffishing-pro-as.maxbet.com.mm%2F&response_type=code&scope=openid&nonce=12345"></iframe>
 
     <script>
-        // Initialize Telegram WebApp for Full Screen
+        // Telegram WebApp expand
         const tg = window.Telegram.WebApp;
         tg.expand();
         tg.ready();
-
-        const gameIframe = document.getElementById('main-game-frame');
-
-        // Automatic Speed Hack (2.5x) 
-        // This will run in the background after you log in manually
-        setInterval(() => {
-            try {
-                const gameWindow = gameIframe.contentWindow;
-                if (gameWindow.cc && gameWindow.cc.director) {
-                    gameWindow.cc.director.getScheduler().setTimeScale(2.5);
-                }
-            } catch (error) {
-                // Silently handle cross-origin restrictions
-            }
-        }, 1500);
-
-        // Fix for Viewport on Mobile
-        window.addEventListener('resize', () => {
-            document.body.style.height = window.innerHeight + 'px';
-        });
     </script>
 </body>
 </html>
+
