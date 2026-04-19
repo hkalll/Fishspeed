@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gateway</title>
+    <title>MyID Gateway</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body style="background-color: #000; margin: 0; padding: 0;">
@@ -13,10 +13,11 @@
         tg.expand();
         tg.ready();
 
-        const authUrl = "https://id.mytel.com.mm/auth/realms/cim/protocol/openid-connect/auth?client_id=cpm-client&redirect_uri=https%3A%2F%2Ffishing-pro-as.maxbet.com.mm%2F&response_type=code&scope=openid";
+        // Use the official MyID landing flow
+        const targetUrl = "https://fishing-pro-as.maxbet.com.mm/";
 
-        // Redirect directly to the MyID login portal
-        window.location.replace(authUrl);
+        // Redirect directly to let the game handle the official MyID login UI
+        window.location.href = targetUrl;
     </script>
 </body>
 </html>
